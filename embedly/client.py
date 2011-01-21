@@ -17,12 +17,12 @@ USER_AGENT = 'Mozilla/5.0 (compatible; embedly-python/0.2;)'
 class Embedly(object):
     """
     Client
-    
+
     """
-    def __init__(self, user_agent=USER_AGENT, domain='api.embed.ly', key=None):
+    def __init__(self, user_agent=USER_AGENT, domain=None, key=None):
         """
         Initialize the Embedly client 
-        
+
         :param user_agent: User Agent passed to Embedly
         :type user_agent: str
         :param domain: Domain you want the client to use '(api|pro).embed.ly'
@@ -33,13 +33,19 @@ class Embedly(object):
         :returns: None
         :raises: ValueError
         """
+        if not domain:
+            if key:
+                domain = 'pro.embed.ly'
+            else:
+                domain = 'api.embed.ly'
+
         if not domain_re.match(domain):
             raise ValueError(
                 'Invalid Domain: %s. api.embed.ly or pro.embed.ly' % domain)
-        
+
         if domain == 'pro.embed.ly' and key is None:
             raise ValueError('domain: pro.embed.ly requires a key.')
-        
+
         self.user_agent = user_agent
         self.domain = domain
         self.key = key
@@ -71,7 +77,8 @@ class Embedly(object):
         if resp['status'] == '200':
             data = json.loads(content)
         else:
-            data = {'error' : True,
+            data = {'type' : 'error',
+                    'error' : True,
                     'error_code' : int(resp['status'])}
 
         print data
