@@ -2,4 +2,5 @@
 Embedly.egg-info/
 build/
 dist/
+.virtualenv
 
