@@ -2,11 +2,11 @@ embedly-python
 ==============
 Lib for interacting with the embedly API.
 
-getting started
+Getting Started
 ===============
 TODO
 
-testing
+Testing
 =======
 The easiest way to run the test suite is with nose.
 
@@ -23,6 +23,6 @@ If there is some problem, it's easiest to debug by adding some options.
 
   nosetests --with-freshen -v -s
 
-copyright
+Copyright
 =========
 Copyright (c) 2011 Embed.ly, Inc. See LICENSE for details.
