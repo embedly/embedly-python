@@ -14,6 +14,9 @@ setup(
     """,
     url = "https://github.com/embedly/embedly-python",
     packages = ['embedly'],
+    install_requires = [
+        'httplib2'
+    ],
     zip_safe = True,
     **extra
 )
