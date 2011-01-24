@@ -1,12 +1,33 @@
-WARNING: WIP
-
 embedly-python
 ==============
-Lib for interacting with the embedly API.
+Python Library for interacting with Embedly's API and Embedly Pro.
+
+WARNING: This is alpha code. Expect it to change before a 0.1 is released.
+
+Install
+=======
+Basic install directions::
+
+  git clone git@github.com:embedly/embedly-python
+  sudo python setup.py
 
 Getting Started
 ===============
-TODO
+Basic usage::
+
+  >>> from embedly import Embedly
+  >>> client = Embedly()
+  >>> obj = client.oembed('http://instagr.am/p/BL7ti/')
+  >>> obj.type
+  u'photo'
+  >>> obj['type']
+  u['photo']
+  >>> obj.url
+  u'http://distillery.s3.amazonaws.com/media/2011/01/24/cdd759a319184cb79793506607ff5746_7.jpg'
+
+  >>> obj = client.oembed('http://instagr.am/p/error')
+  >>> obj.error
+  True
 
 Testing
 =======

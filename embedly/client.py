@@ -81,8 +81,6 @@ class Embedly(object):
                     'error' : True,
                     'error_code' : int(resp['status'])}
 
-        print data
-
         if isinstance(url_or_urls, list):
             return map(lambda url, data: Url(data, method, url),
                        url_or_urls, data)
