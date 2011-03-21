@@ -49,37 +49,110 @@ class Embedly(object):
         self.user_agent = user_agent
         self.domain = domain
         self.key = key
+        self.services = []
+
+    def get_services(self):
+        """
+        get_services makes call to services end point of api.embed.ly to fetch the
+        list of supported providers and their regexes
+        """
+        
+        if self.services: return self.services
+            
+        url = 'http://api.embed.ly/1/services/python'
+        
+        http = httplib2.Http()
+        headers = {'User-Agent' : self.user_agent}
+        resp, content = http.request(url, headers=headers)
+        
+        if resp['status'] == '200':
+            resp_data = json.loads(content)
+            self.services = resp_data
+            
+        return self.services
 
     def _get(self, version, method, url_or_urls, **kwargs):
         """
-        _get makes the actual call to pro.embed.ly
+        _get makes the actual call to pro.embed.ly/api.embed.ly
         """
+        
         query = ''
-        if isinstance(url_or_urls, list):
-            query = 'urls=%s&' % ','.join([urllib.quote(url) for url in url_or_urls])
-        else:
-            kwargs['url'] = url_or_urls
-
-        if self.key and self.domain == 'pro.embed.ly':
-            kwargs['key'] = self.key
-
-        query += urllib.urlencode(kwargs)
-
-        url = 'http://%s/%s/%s?%s' % (self.domain, version, method, query)
-
-        http = httplib2.Http()
-
-        headers = {'User-Agent' : self.user_agent}
-
-        resp, content = http.request(url, headers=headers)
-
+        
+        if self.domain == 'api.embed.ly':
+            _regex = []    
+            for each in self.get_services():
+                _regex.append('|'.join(each.get('regex',[])))
+                
+            service_regex = re.compile('|'.join(_regex))
+            return_list = []
+            if isinstance(url_or_urls, list):
+                new_url_or_urls = []
+                for each in url_or_urls:
+                    if service_regex.match(each):
+                        return_list.append('valid')
+                        new_url_or_urls.append(each)
+                    else:
+                        return_list.append({'type' : 'error', 'error' : True, 'error_code' : 404, 'error_message': 'This service requires an Embedly Pro account', 'url': each, 'version': '1.0'})
+                old_url_or_urls = url_or_urls
+                url_or_urls = new_url_or_urls
+            else:
+                if not service_regex.match(url_or_urls):
+                    data =  {'type' : 'error', 'error' : True, 'error_code' : 404, 'error_message': 'This service requires an Embedly Pro account', 'url': url_or_urls, 'version': '1.0'}
+                    return Url(data, method, url_or_urls)
+                else:
+                    return_list = 'valid'
+                    
         data = {}
-        if resp['status'] == '200':
-            data = json.loads(content)
-        else:
-            data = {'type' : 'error',
-                    'error' : True,
-                    'error_code' : int(resp['status'])}
+        if url_or_urls:
+            
+            if isinstance(url_or_urls, list):
+                query = 'urls=%s&' % ','.join([urllib.quote(url) for url in url_or_urls])
+            else:
+                kwargs['url'] = url_or_urls
+    
+            if self.key and self.domain == 'pro.embed.ly':
+                kwargs['key'] = self.key
+    
+            query += urllib.urlencode(kwargs)
+            
+            url = 'http://%s/%s/%s?%s' % (self.domain, version, method, query)
+            
+            http = httplib2.Http()
+            
+            headers = {'User-Agent' : self.user_agent}
+            
+            resp, content = http.request(url, headers=headers)
+            
+            if resp['status'] == '200':
+                data = json.loads(content)
+            else:
+                data = {'type' : 'error',
+                        'error' : True,
+                        'error_code' : int(resp['status'])}
+        
+        
+        if self.domain == 'api.embed.ly':
+            if isinstance(return_list, list):
+                if 'valid' in return_list:
+                    _data = []
+                    if isinstance(data, list):
+                        data.reverse()
+                        for each in return_list:
+                            if each == 'valid':
+                                _data.append(data.pop())
+                            else:
+                                _data.append(each)
+                    elif isinstance(data, dict) and data.get('type','') == 'error':
+                        for each in return_list:
+                            if each == 'valid':
+                                _data.append(data)
+                            else:
+                                _data.append(each)
+                else:
+                    _data = return_list
+                
+                data = _data
+                url_or_urls = old_url_or_urls
 
         if isinstance(url_or_urls, list):
             return map(lambda url, data: Url(data, method, url),
