@@ -31,20 +31,20 @@ Basic usage::
 
 Testing
 =======
-The easiest way to run the test suite is with nose.
+The easiest way to run the test suite is with nose::
 
-  pip install nose
-  nosetests
+    pip install nose
+    nosetests
 
 If freshen is installed, you can also run the features.  You'll need libyaml
-dev libs to install freshen successfully.
+dev libs to install freshen successfully::
 
-  pip install freshen
-  nosetests --with-freshen
+    pip install freshen
+    nosetests --with-freshen
 
-If there is some problem, it's easiest to debug by adding some options.
+If there is some problem, it's easiest to debug by adding some options::
 
-  nosetests --with-freshen -v -s
+    nosetests --with-freshen -v -s
 
 Copyright
 =========
