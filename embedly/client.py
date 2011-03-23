@@ -59,7 +59,7 @@ class Embedly(object):
         
         if self.services: return self.services
             
-        url = 'http://api.embed.ly/1/services/python'
+        url = 'http://' + self.domain +'/1/services/python'
         
         http = httplib2.Http()
         headers = {'User-Agent' : self.user_agent}
@@ -78,12 +78,14 @@ class Embedly(object):
         
         query = ''
         
-        if self.domain == 'api.embed.ly':
+        if self.key:
+            
             _regex = []    
             for each in self.get_services():
                 _regex.append('|'.join(each.get('regex',[])))
                 
             service_regex = re.compile('|'.join(_regex))
+            
             return_list = []
             if isinstance(url_or_urls, list):
                 new_url_or_urls = []
@@ -131,7 +133,7 @@ class Embedly(object):
                         'error_code' : int(resp['status'])}
         
         
-        if self.domain == 'api.embed.ly':
+        if self.key:
             if isinstance(return_list, list):
                 if 'valid' in return_list:
                     _data = []
