@@ -94,12 +94,26 @@ class Embedly(object):
                         return_list.append('valid')
                         new_url_or_urls.append(each)
                     else:
-                        return_list.append({'type' : 'error', 'error' : True, 'error_code' : 404, 'error_message': 'This service requires an Embedly Pro account', 'url': each, 'version': '1.0'})
+                        return_list.append({
+                            'type' : 'error',
+                            'error' : True,
+                            'error_code' : 404,
+                            'error_message': 'This service requires an Embedly Pro account',
+                            'url': each,
+                            'version': '1.0'
+                        })
                 old_url_or_urls = url_or_urls
                 url_or_urls = new_url_or_urls
             else:
                 if not service_regex.match(url_or_urls):
-                    data =  {'type' : 'error', 'error' : True, 'error_code' : 404, 'error_message': 'This service requires an Embedly Pro account', 'url': url_or_urls, 'version': '1.0'}
+                    data =  {
+                            'type' : 'error',
+                            'error' : True,
+                            'error_code' : 404,
+                            'error_message': 'This service requires an Embedly Pro account',
+                            'url': url_or_urls,
+                            'version': '1.0'
+                    }
                     return Url(data, method, url_or_urls)
                 else:
                     return_list = 'valid'
