@@ -48,6 +48,8 @@ Feature: OEmbed
             | http://blog.embed.ly/bob                                                         | http://posterous.com       |
             | http://blog.doki-pen.org/cassandra-rules                                         | http://posterous.com       |
             | http://www.guardian.co.uk/media/2011/jan/21/andy-coulson-phone-hacking-statement | http://www.guardian.co.uk/ |
+            | http://bit.ly/inRjMw                                                             | http://www.ktuu.com/       |
+            | http://b.qr.ae/k0IroH                                                            | http://www.quora.com/      |
 
 
     Scenario Outline: Attempt to get 404 URL
