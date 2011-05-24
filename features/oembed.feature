@@ -14,7 +14,7 @@ Feature: OEmbed
             | http://www.scribd.com/doc/13994900/Easter                    | http://www.scribd.com/  |
             | http://www.scribd.com/doc/28452730/Easter-Cards              | http://www.scribd.com/  |
             | http://www.youtube.com/watch?v=Zk7dDekYej0                   | http://www.youtube.com/ |
-            | http://tweetphoto.com/14784358                               | http://plixi.com        |
+            | http://yfrog.com/h22eu4j                                     | http://yfrog.com        |
 
 
     Scenario Outline: Get the provider_url with force flag
@@ -35,7 +35,7 @@ Feature: OEmbed
         Examples:
             | urls                                                                                      | provider_urls                                 |
             | http://www.scribd.com/doc/13994900/Easter,http://www.scribd.com/doc/28452730/Easter-Cards | http://www.scribd.com/,http://www.scribd.com/ |
-            | http://www.youtube.com/watch?v=Zk7dDekYej0,http://plixi.com/p/16044847                    | http://www.youtube.com/,http://plixi.com      |
+            | http://www.youtube.com/watch?v=Zk7dDekYej0,http://yfrog.com/h22eu4j                       | http://www.youtube.com/,http://yfrog.com      |
 
 
     Scenario Outline: Get the provider_url with pro
@@ -74,6 +74,6 @@ Feature: OEmbed
             | urls                                                                             | errcode  | types       |
             | http://www.youtube.com/this/is/a/bad/url,http://blog.embed.ly/alsd/slsdlf/asdlfj | 404,404  | error,error |
             | http://blog.embed.ly/lsbsdlfldsf/asdf/kl,http://tweetphoto.com/asdf/asdf/asdfl   | 404,404  | error,error |
-            | http://blog.embed.ly/lsbsdlfldsf/asdf/kl,http://tweetphoto.com/14784358          | 404,None | error,photo |
-            | http://tweetphoto.com/14784358,http://www.scribd.com/asdf/asdf/asdfasdf          | None,404 | photo,error |
+            | http://blog.embed.ly/lsbsdlfldsf/asdf/kl,http://yfrog.com/h22eu4j                | 404,None | error,photo |
+            | http://yfrog.com/h22eu4j,http://www.scribd.com/asdf/asdf/asdfasdf                | None,404 | photo,error |
         
