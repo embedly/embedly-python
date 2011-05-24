@@ -4,7 +4,7 @@ extra = {}
 
 setup(
     name = 'Embedly',
-    version = '0.2.0',
+    version = '0.2.1',
     author = 'Embed.ly, Inc.',
     author_email = 'support@embed.ly',
     description = 'Python lib for Embedly',
