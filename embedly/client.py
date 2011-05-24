@@ -90,7 +90,7 @@ class Embedly(object):
             if isinstance(url_or_urls, list):
                 new_url_or_urls = []
                 for each in url_or_urls:
-                    if service_regex.match(each):
+                    if self.key or service_regex.match(each):
                         return_list.append('valid')
                         new_url_or_urls.append(each)
                     else:
@@ -105,7 +105,7 @@ class Embedly(object):
                 old_url_or_urls = url_or_urls
                 url_or_urls = new_url_or_urls
             else:
-                if not service_regex.match(url_or_urls):
+                if not self.key and not service_regex.match(url_or_urls):
                     data =  {
                             'type' : 'error',
                             'error' : True,
