@@ -21,7 +21,7 @@ class Embedly(object):
     """
     def __init__(self, user_agent=USER_AGENT, domain=None, key=None):
         """
-        Initialize the Embedly client 
+        Initialize the Embedly client
 
         :param user_agent: User Agent passed to Embedly
         :type user_agent: str
@@ -56,36 +56,36 @@ class Embedly(object):
         get_services makes call to services end point of api.embed.ly to fetch the
         list of supported providers and their regexes
         """
-        
+
         if self.services: return self.services
-            
+
         url = 'http://' + self.domain +'/1/services/python'
-        
+
         http = httplib2.Http()
         headers = {'User-Agent' : self.user_agent}
         resp, content = http.request(url, headers=headers)
-        
+
         if resp['status'] == '200':
             resp_data = json.loads(content)
             self.services = resp_data
-            
+
         return self.services
 
     def _get(self, version, method, url_or_urls, **kwargs):
         """
         _get makes the actual call to pro.embed.ly/api.embed.ly
         """
-        
+
         query = ''
-        
+
         if self.key:
-            
-            _regex = []    
+
+            _regex = []
             for each in self.get_services():
                 _regex.append('|'.join(each.get('regex',[])))
-                
+
             service_regex = re.compile('|'.join(_regex))
-            
+
             return_list = []
             if isinstance(url_or_urls, list):
                 new_url_or_urls = []
@@ -103,36 +103,36 @@ class Embedly(object):
                     return Url(data, method, url_or_urls)
                 else:
                     return_list = 'valid'
-                    
+
         data = {}
         if url_or_urls:
-            
+
             if isinstance(url_or_urls, list):
                 query = 'urls=%s&' % ','.join([urllib.quote(url) for url in url_or_urls])
             else:
                 kwargs['url'] = url_or_urls
-    
+
             if self.key and self.domain == 'pro.embed.ly':
                 kwargs['key'] = self.key
-    
+
             query += urllib.urlencode(kwargs)
-            
+
             url = 'http://%s/%s/%s?%s' % (self.domain, version, method, query)
-            
+
             http = httplib2.Http()
-            
+
             headers = {'User-Agent' : self.user_agent}
-            
+
             resp, content = http.request(url, headers=headers)
-            
+
             if resp['status'] == '200':
                 data = json.loads(content)
             else:
                 data = {'type' : 'error',
                         'error' : True,
                         'error_code' : int(resp['status'])}
-        
-        
+
+
         if self.key:
             if isinstance(return_list, list):
                 if 'valid' in return_list:
@@ -152,14 +152,14 @@ class Embedly(object):
                                 _data.append(each)
                 else:
                     _data = return_list
-                
+
                 data = _data
                 url_or_urls = old_url_or_urls
 
         if isinstance(url_or_urls, list):
             return map(lambda url, data: Url(data, method, url),
                        url_or_urls, data)
- 
+
         return Url(data, method, url_or_urls)
 
     def oembed(self, url_or_urls, **kwargs):
@@ -167,13 +167,13 @@ class Embedly(object):
         oembed
         """
         return self._get(1, 'oembed', url_or_urls, **kwargs)
-    
+
     def preview(self, url_or_urls, **kwargs):
         """
         oembed
         """
         return self._get(1, 'preview', url_or_urls, **kwargs)
-    
+
     def objectify(self, url_or_urls, **kwargs):
         """
         oembed
