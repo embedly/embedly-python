@@ -8,6 +8,7 @@ import re
 import urllib
 import httplib2
 import json
+import itertools
 
 from models import Url
 
@@ -70,6 +71,26 @@ class Embedly(object):
             self.services = resp_data
 
         return self.services
+
+    def service_matcher(self):
+        """
+        Generate a really big regular expression that we can use to determine if a URL is serviced by embedly or not.
+        Returns a compiled regular expression.
+        """
+        if self.service_re is not None:
+            return self.service_re
+
+        services            = self.get_services()
+        service_expressions = list(itertools.chain.from_iterable([service['regex'] for service in services]))
+        self.service_re     = re.compile('|'.join(service_expressions), re.I)
+
+        return self.service_re
+
+    def url_is_serviced(self, url):
+        """
+        If a URL is serviced by Embed.ly, return True. Otherwise return False.
+        """
+        return self.service_matcher().match(url) is not None
 
     def _get(self, version, method, url_or_urls, **kwargs):
         """
