@@ -12,7 +12,7 @@ Install with `Pip <http://www.pip-installer.org>`_ (recommended)::
 
 Or setuptools::
 
-  git clone git@github.com:embedly/embedly-python
+  git clone git://github.com/embedly/embedly-python.git
   sudo python setup.py
 
 
