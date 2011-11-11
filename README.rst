@@ -3,15 +3,21 @@ embedly-python
 Python Library for interacting with Embedly's API. To get started sign up for
 a key at `embed.ly/pricing <http://embed.ly/pricing>`_.
 
+
 Install
-=======
-Basic install directions::
+-------
+Install with `Pip <http://www.pip-installer.org>`_ (recommended)::
+
+  pip install -e git://github.com/embedly/embedly-python.git#egg=Embedly
+
+Or setuptools::
 
   git clone git@github.com:embedly/embedly-python
   sudo python setup.py
 
+
 Getting Started
-===============
+---------------
 Basic usage::
 
   >>> from embedly import Embedly
@@ -30,5 +36,5 @@ Basic usage::
 
 
 Copyright
-=========
+---------
 Copyright (c) 2011 Embed.ly, Inc. See LICENSE for details.
