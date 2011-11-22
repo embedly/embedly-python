@@ -47,6 +47,10 @@ class AttrDict(object):
     def keys(self): return self.data.keys()
     def values(self): return self.data.values()
     def items(self): return self.data.items()
+    
+    @property
+    def dict(self):
+        return self.data
 
 class Url(AttrDict):
 

@@ -1,22 +1,27 @@
 embedly-python
 ==============
-Python Library for interacting with Embedly's API and Embedly Pro.
+Python Library for interacting with Embedly's API. To get started sign up for
+a key at `embed.ly/pricing <http://embed.ly/pricing>`_.
 
-WARNING: This is alpha code. Expect it to change before a 0.1 is released.
 
 Install
-=======
-Basic install directions::
+-------
+Install with `Pip <http://www.pip-installer.org>`_ (recommended)::
 
-  git clone git@github.com:embedly/embedly-python
+  pip install -e git://github.com/embedly/embedly-python.git#egg=Embedly
+
+Or setuptools::
+
+  git clone git://github.com/embedly/embedly-python.git
   sudo python setup.py
 
+
 Getting Started
-===============
+---------------
 Basic usage::
 
   >>> from embedly import Embedly
-  >>> client = Embedly()
+  >>> client = Embedly(:key)
   >>> obj = client.oembed('http://instagr.am/p/BL7ti/')
   >>> obj.type
   u'photo'
@@ -29,23 +34,7 @@ Basic usage::
   >>> obj.error
   True
 
-Testing
-=======
-The easiest way to run the test suite is with nose::
-
-    pip install nose
-    nosetests
-
-If freshen is installed, you can also run the features.  You'll need libyaml
-dev libs to install freshen successfully::
-
-    pip install freshen
-    nosetests --with-freshen
-
-If there is some problem, it's easiest to debug by adding some options::
-
-    nosetests --with-freshen -v -s
 
 Copyright
-=========
+---------
 Copyright (c) 2011 Embed.ly, Inc. See LICENSE for details.
