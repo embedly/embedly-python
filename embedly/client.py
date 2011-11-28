@@ -70,7 +70,7 @@ class Embedly(object):
         """
         ``is_supported`` is a shortcut for client.regex.match(url)
         """
-        return self._regex.match(url) is not None
+        return self.regex.match(url) is not None
 
     @property
     def regex(self):
