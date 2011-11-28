@@ -32,7 +32,7 @@ class AttrDict(object):
             raise AttributeError(
                 "%s instance has no attribute '%s'" % (self.__class__.__name__,
                                                        name))
- 
+
     def __setattr__(self, name, value):
         if name in ['data', 'method']:
             object.__setattr__(self, name, value)
@@ -47,7 +47,7 @@ class AttrDict(object):
     def keys(self): return self.data.keys()
     def values(self): return self.data.values()
     def items(self): return self.data.items()
-    
+
     @property
     def dict(self):
         return self.data
@@ -60,11 +60,11 @@ class Url(AttrDict):
         self.original_url = original_url
 
     def __str__(self):
-        return self.__unicode().encode("utf-8")
-    
+        return self.__unicode__().encode("utf-8")
+
     def __unicode__(self):
         r = u'<%s ' % self.method.title()
-        
+
         if self.original_url:
             r += self.original_url
 

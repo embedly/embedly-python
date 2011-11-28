@@ -7,7 +7,11 @@ The embedly object that interacts with the service
 import re
 import urllib
 import httplib2
-import json
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 from models import Url
 
@@ -28,11 +32,11 @@ class Embedly(object):
         :type key: str
 
         :returns: None
-        """        
+        """
         self.user_agent = user_agent
         self.key = key
         self.services = []
-        
+
         self._regex = None
 
     def get_services(self):
@@ -57,18 +61,25 @@ class Embedly(object):
             _regex = []
             for each in self.get_services():
                 _regex.append('|'.join(each.get('regex',[])))
-    
+
             self._regex = re.compile('|'.join(_regex))
 
         return self.services
 
+    def is_supported(self, url):
+        """
+        ``is_supported`` is a shortcut for client.regex.match(url)
+        """
+        return self._regex.match(url) is not None
+
     @property
     def regex(self):
         """
-        regex method just so we can raise a ValueError if needed.
+        ``regex`` property just so we can call get_services if the _regex is
+        not yet filled.
         """
         if not self._regex:
-            raise ValueError('get_services need to be called first.')
+            self.get_services()
 
         return self._regex
 
@@ -94,7 +105,7 @@ class Embedly(object):
         kwargs['key'] = key
 
         query += urllib.urlencode(kwargs)
-    
+
         if multi:
             query += '&urls=%s&' % ','.join([urllib.quote(url) for url in url_or_urls])
         else:
