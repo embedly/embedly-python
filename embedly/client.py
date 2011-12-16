@@ -123,7 +123,7 @@ class Embedly(object):
             data = json.loads(content)
             
             if kwargs.get('raw', False):
-                data.raw = content
+                data['raw'] = content
         else:
             data = {'type' : 'error',
                     'error' : True,
