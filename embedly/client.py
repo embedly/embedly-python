@@ -121,6 +121,9 @@ class Embedly(object):
 
         if resp['status'] == '200':
             data = json.loads(content)
+            
+            if kwargs.get('raw', False):
+                data['raw'] = content
         else:
             data = {'type' : 'error',
                     'error' : True,
