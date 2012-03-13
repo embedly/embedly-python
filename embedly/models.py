@@ -7,7 +7,10 @@ class AttrDict(object):
     """
     UserDict is a pain in the ass. Let's just make our own.
     """
-    def __init__(self, data={}):
+    def __init__(self, data=None):
+        if data is None:
+            data = {}
+
         for key, value in data.items():
             if isinstance(value, dict):
                 data[key] = AttrDict(value)
@@ -54,7 +57,9 @@ class AttrDict(object):
 
 class Url(AttrDict):
 
-    def __init__(self, data={}, method=None, original_url=None):
+    def __init__(self, data=None, method=None, original_url=None):
+        if data is None:
+            data = {}
         super(Url, self).__init__(data)
         self.method = method or 'url'
         self.original_url = original_url
