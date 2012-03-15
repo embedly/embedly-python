@@ -94,6 +94,11 @@ class Embedly(object):
         #A flag we can use instead of calling isinstance all the time.
         multi = isinstance(url_or_urls, list)
 
+        # Throw an error early for too many URLs
+        if multi and len(url_or_urls) > 20:
+            raise ValueError('Embedly accepts only 20 urls at a time. Url ' \
+                'Count:%s' % len(url_or_urls))
+
         query = ''
 
         key = kwargs.get('key', self.key)
@@ -121,7 +126,7 @@ class Embedly(object):
 
         if resp['status'] == '200':
             data = json.loads(content)
-            
+
             if kwargs.get('raw', False):
                 data['raw'] = content
         else:
