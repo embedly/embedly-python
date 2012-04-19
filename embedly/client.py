@@ -6,6 +6,7 @@ The embedly object that interacts with the service
 """
 import re
 import urllib
+import urllib2
 import httplib2
 
 try:
@@ -22,7 +23,7 @@ class Embedly(object):
     Client
 
     """
-    def __init__(self, key=None, user_agent=USER_AGENT):
+    def __init__(self, key=None, user_agent=USER_AGENT, use_urllib2=False):
         """
         Initialize the Embedly client
 
@@ -30,14 +31,38 @@ class Embedly(object):
         :type user_agent: str
         :param key: Embedly Pro key
         :type key: str
+        :param use_urllib2: Option to use urllib2 instead of httplib2
+        :type use_urllib2: bool
 
         :returns: None
         """
         self.user_agent = user_agent
         self.key = key
+        self.use_urllib2 = use_urllib2
         self.services = []
 
         self._regex = None
+
+    def _make_request(self, url, headers={}):
+        """
+        Makes HTTP requests using httplib2 or urllib2
+        """
+        if self.use_urllib2:
+            try:
+                request = urllib2.Request(url, headers=headers)
+                response = urllib2.urlopen(request)
+                resp = response.headers.dict
+                if "status" not in resp:
+                    resp["status"] = str(response.code)
+                content = response.read()
+            except urllib2.HTTPError, e:
+                resp = {"status" : str(e.getcode())}
+                content = e.read()
+        else:
+            http = httplib2.Http()
+            resp, content = http.request(url, headers=headers)
+
+        return resp, content
 
     def get_services(self):
         """
@@ -49,9 +74,8 @@ class Embedly(object):
 
         url = 'http://api.embed.ly/1/services/python'
 
-        http = httplib2.Http()
         headers = {'User-Agent' : self.user_agent}
-        resp, content = http.request(url, headers=headers)
+        resp, content = self._make_request(url, headers)
 
         if resp['status'] == '200':
             resp_data = json.loads(content)
@@ -118,11 +142,9 @@ class Embedly(object):
 
         url = 'http://api.embed.ly/%s/%s?%s' % (version, method, query)
 
-        http = httplib2.Http()
-
         headers = {'User-Agent' : self.user_agent}
 
-        resp, content = http.request(url, headers=headers)
+        resp, content = self._make_request(url, headers=headers)
 
         if resp['status'] == '200':
             data = json.loads(content)

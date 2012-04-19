@@ -74,66 +74,81 @@ class EmbedlyTestCase(unittest.TestCase):
         self.assert_(obj.object.type is None)
 
     def test_provider(self):
-        http = Embedly(self.key)
+        def do_test(http):
+            obj = http.oembed('http://www.scribd.com/doc/13994900/Easter')
+            self.assert_(obj.provider_url == 'http://www.scribd.com/')
 
-        obj = http.oembed('http://www.scribd.com/doc/13994900/Easter')
-        self.assert_(obj.provider_url == 'http://www.scribd.com/')
+            obj = http.oembed('http://www.scribd.com/doc/28452730/Easter-Cards')
+            self.assert_(obj.provider_url == 'http://www.scribd.com/')
 
-        obj = http.oembed('http://www.scribd.com/doc/28452730/Easter-Cards')
-        self.assert_(obj.provider_url == 'http://www.scribd.com/')
+            obj = http.oembed('http://www.youtube.com/watch?v=Zk7dDekYej0')
+            self.assert_(obj.provider_url == 'http://www.youtube.com/')
 
-        obj = http.oembed('http://www.youtube.com/watch?v=Zk7dDekYej0')
-        self.assert_(obj.provider_url == 'http://www.youtube.com/')
+            obj = http.oembed('http://yfrog.com/h22eu4j')
+            self.assert_(obj.provider_url == 'http://yfrog.com')
 
-        obj = http.oembed('http://yfrog.com/h22eu4j')
-        self.assert_(obj.provider_url == 'http://yfrog.com')
+        http = Embedly(self.key, use_urllib2=False)
+        do_test(http)
+        http = Embedly(self.key, use_urllib2=True)
+        do_test(http)
 
     def test_providers(self):
-        http = Embedly(self.key)
-
-        objs = http.oembed(['http://www.scribd.com/doc/13994900/Easter',
+        def do_test(http):
+            objs = http.oembed(['http://www.scribd.com/doc/13994900/Easter',
                             'http://www.scribd.com/doc/28452730/Easter-Cards'])
-        self.assert_(objs[0].provider_url == 'http://www.scribd.com/')
-        self.assert_(objs[1].provider_url == 'http://www.scribd.com/')
+            self.assert_(objs[0].provider_url == 'http://www.scribd.com/')
+            self.assert_(objs[1].provider_url == 'http://www.scribd.com/')
 
-        objs = http.oembed(['http://www.youtube.com/watch?v=Zk7dDekYej0',
-                            'http://yfrog.com/h22eu4'])
-        self.assert_(objs[0].provider_url == 'http://www.youtube.com/')
-        self.assert_(objs[1].provider_url == 'http://yfrog.com')
+            objs = http.oembed(['http://www.youtube.com/watch?v=Zk7dDekYej0',
+                                'http://yfrog.com/h22eu4'])
+            self.assert_(objs[0].provider_url == 'http://www.youtube.com/')
+            self.assert_(objs[1].provider_url == 'http://yfrog.com')
+
+        http = Embedly(self.key, use_urllib2=False)
+        do_test(http)
+        http = Embedly(self.key, use_urllib2=True)
+        do_test(http)
 
     def test_error(self):
-        http = Embedly(self.key)
+        def do_test(http):
+            obj = http.oembed('http://www.embedly.com/this/is/a/bad/url')
+            self.assert_(obj.error is True, obj.dict)
+            obj = http.oembed('http://blog.embed.ly/lsbsdlfldsf/asdfkljlas/klajsdlfkasdf')
+            self.assert_(obj.error is True, obj.dict)
+            obj = http.oembed('http://twitpic/nothing/to/see/here')
+            self.assert_(obj.error is True, obj.dict)
 
-        obj = http.oembed('http://www.embedly.com/this/is/a/bad/url')
-        self.assert_(obj.error is True, obj.dict)
-        obj = http.oembed('http://blog.embed.ly/lsbsdlfldsf/asdfkljlas/klajsdlfkasdf')
-        self.assert_(obj.error is True, obj.dict)
-        obj = http.oembed('http://twitpic/nothing/to/see/here')
-        self.assert_(obj.error is True, obj.dict)
+        http = Embedly(self.key, use_urllib2=False)
+        do_test(http)
+        http = Embedly(self.key, use_urllib2=True)
+        do_test(http)
 
     def test_multi_errors(self):
-        http = Embedly(self.key)
+        def do_test(http):
+            objs = http.oembed(['http://www.embedly.com/this/is/a/bad/url',
+                                'http://blog.embed.ly/alsd/slsdlf/asdlfj'])
+            self.assert_(objs[0].type == 'error', objs[0].dict)
+            self.assert_(objs[1].type == 'error', objs[1].dict)
 
-        objs = http.oembed(['http://www.embedly.com/this/is/a/bad/url',
-                            'http://blog.embed.ly/alsd/slsdlf/asdlfj'])
-        self.assert_(objs[0].type == 'error', objs[0].dict)
-        self.assert_(objs[1].type == 'error', objs[1].dict)
+            objs = http.oembed(['http://blog.embed.ly/lsbsdlfldsf/asdf/kl',
+                                'http://twitpic.com/nothing/to/see/here'])
+            self.assert_(objs[0].type == 'error',objs[0].dict)
+            self.assert_(objs[1].type == 'error',objs[1].dict)
 
-        objs = http.oembed(['http://blog.embed.ly/lsbsdlfldsf/asdf/kl',
-                            'http://twitpic.com/nothing/to/see/here'])
-        self.assert_(objs[0].type == 'error',objs[0].dict)
-        self.assert_(objs[1].type == 'error',objs[1].dict)
+            objs = http.oembed(['http://blog.embed.ly/lsbsdlfldsf/asdf/kl',
+                                'http://yfrog.com/h22eu4j'])
+            self.assert_(objs[0].type == 'error',objs[0].dict)
+            self.assert_(objs[1].type == 'photo',objs[1].dict)
 
-        objs = http.oembed(['http://blog.embed.ly/lsbsdlfldsf/asdf/kl',
-                            'http://yfrog.com/h22eu4j'])
-        self.assert_(objs[0].type == 'error',objs[0].dict)
-        self.assert_(objs[1].type == 'photo',objs[1].dict)
+            objs = http.oembed(['http://yfrog.com/h22eu4j',
+                                'http://www.scribd.com/asdf/asdf/asdfasdf'])
+            self.assert_(objs[0].type == 'photo',objs[0].dict)
+            self.assert_(objs[1].type == 'error',objs[1].dict)
 
-        objs = http.oembed(['http://yfrog.com/h22eu4j',
-                            'http://www.scribd.com/asdf/asdf/asdfasdf'])
-        self.assert_(objs[0].type == 'photo',objs[0].dict)
-        self.assert_(objs[1].type == 'error',objs[1].dict)
-
+        http = Embedly(self.key, use_urllib2=False)
+        do_test(http)
+        http = Embedly(self.key, use_urllib2=True)
+        do_test(http)
 
     def test_too_many_urls(self):
         http = Embedly(self.key)
