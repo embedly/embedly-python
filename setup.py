@@ -18,7 +18,7 @@ else:
 
 setup(
     name = 'Embedly',
-    version = 'urllib2',
+    version = '0.4.3',
     author = 'Embed.ly, Inc.',
     author_email = 'support@embed.ly',
     description = 'Python Library for Embedly',
