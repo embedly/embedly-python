@@ -6,8 +6,7 @@ The embedly object that interacts with the service
 """
 import re
 import urllib
-import urllib2
-import httplib2
+from embedly.httpclients import Httplib2Client
 
 try:
     import json
@@ -23,7 +22,7 @@ class Embedly(object):
     Client
 
     """
-    def __init__(self, key=None, user_agent=USER_AGENT, use_urllib2=False):
+    def __init__(self, key=None, user_agent=USER_AGENT, http_client=Httplib2Client()):
         """
         Initialize the Embedly client
 
@@ -38,31 +37,13 @@ class Embedly(object):
         """
         self.user_agent = user_agent
         self.key = key
-        self.use_urllib2 = use_urllib2
+        self.http_client = http_client
         self.services = []
 
         self._regex = None
 
     def _make_request(self, url, headers={}):
-        """
-        Makes HTTP requests using httplib2 or urllib2
-        """
-        if self.use_urllib2:
-            try:
-                request = urllib2.Request(url, headers=headers)
-                response = urllib2.urlopen(request)
-                resp = response.headers.dict
-                if "status" not in resp:
-                    resp["status"] = str(response.code)
-                content = response.read()
-            except urllib2.HTTPError, e:
-                resp = {"status" : str(e.getcode())}
-                content = e.read()
-        else:
-            http = httplib2.Http()
-            resp, content = http.request(url, headers=headers)
-
-        return resp, content
+        return self.http_client.request(url, headers)
 
     def get_services(self):
         """

@@ -3,6 +3,7 @@ import os
 import unittest
 
 from embedly.client import Embedly
+from embedly.httpclients import Httplib2Client, Urllib2Client
 from embedly.models import Url
 
 class EmbedlyTestCase(unittest.TestCase):
@@ -87,9 +88,9 @@ class EmbedlyTestCase(unittest.TestCase):
             obj = http.oembed('http://yfrog.com/h22eu4j')
             self.assert_(obj.provider_url == 'http://yfrog.com')
 
-        http = Embedly(self.key, use_urllib2=False)
+        http = Embedly(self.key, http_client=Httplib2Client())
         do_test(http)
-        http = Embedly(self.key, use_urllib2=True)
+        http = Embedly(self.key, http_client=Urllib2Client())
         do_test(http)
 
     def test_providers(self):
@@ -104,9 +105,9 @@ class EmbedlyTestCase(unittest.TestCase):
             self.assert_(objs[0].provider_url == 'http://www.youtube.com/')
             self.assert_(objs[1].provider_url == 'http://yfrog.com')
 
-        http = Embedly(self.key, use_urllib2=False)
+        http = Embedly(self.key, http_client=Httplib2Client())
         do_test(http)
-        http = Embedly(self.key, use_urllib2=True)
+        http = Embedly(self.key, http_client=Urllib2Client())
         do_test(http)
 
     def test_error(self):
@@ -118,9 +119,9 @@ class EmbedlyTestCase(unittest.TestCase):
             obj = http.oembed('http://twitpic/nothing/to/see/here')
             self.assert_(obj.error is True, obj.dict)
 
-        http = Embedly(self.key, use_urllib2=False)
+        http = Embedly(self.key, http_client=Httplib2Client())
         do_test(http)
-        http = Embedly(self.key, use_urllib2=True)
+        http = Embedly(self.key, http_client=Urllib2Client())
         do_test(http)
 
     def test_multi_errors(self):
@@ -145,9 +146,9 @@ class EmbedlyTestCase(unittest.TestCase):
             self.assert_(objs[0].type == 'photo',objs[0].dict)
             self.assert_(objs[1].type == 'error',objs[1].dict)
 
-        http = Embedly(self.key, use_urllib2=False)
+        http = Embedly(self.key, http_client=Httplib2Client())
         do_test(http)
-        http = Embedly(self.key, use_urllib2=True)
+        http = Embedly(self.key, http_client=Urllib2Client())
         do_test(http)
 
     def test_too_many_urls(self):
