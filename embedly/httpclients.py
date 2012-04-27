@@ -14,24 +14,30 @@ import urllib2
 import httplib2
 
 class Httplib2Client(object):
+    def __init__(self, timeout=30):
+        self.timeout = timeout
+
     def request(self, url, headers=None):
         """
         Makes HTTP requests using httplib2
         """
-        http = httplib2.Http()
+        http = httplib2.Http(timeout=self.timeout)
         resp, content = http.request(url, headers=headers)
 
         return resp, content
 
 
 class Urllib2Client(object):
+    def __init__(self, timeout=30):
+        self.timeout = timeout
+
     def request(self, url, headers=None):
         """
         Makes HTTP requests using urllib2
         """
         try:
             request = urllib2.Request(url, headers=(headers or {}))
-            response = urllib2.urlopen(request)
+            response = urllib2.urlopen(request, timeout=self.timeout)
             resp = response.headers.dict
             if "status" not in resp:
                 resp["status"] = str(response.code)
