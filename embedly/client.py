@@ -22,7 +22,7 @@ class Embedly(object):
     Client
 
     """
-    def __init__(self, key=None, user_agent=USER_AGENT):
+    def __init__(self, key=None, user_agent=USER_AGENT, cache_services_data=None ):
         """
         Initialize the Embedly client
 
@@ -36,8 +36,19 @@ class Embedly(object):
         self.user_agent = user_agent
         self.key = key
         self.services = []
+        self.cache_services_data= None
 
         self._regex = None
+
+    def set_services(self,services_data):
+        self.services = services_data
+
+        #build the regex that we can use later.
+        _regex = []
+        for each in self.get_services():
+            _regex.append('|'.join(each.get('regex',[])))
+
+        self._regex = re.compile('|'.join(_regex))
 
     def get_services(self):
         """
@@ -55,14 +66,10 @@ class Embedly(object):
 
         if resp['status'] == '200':
             resp_data = json.loads(content)
-            self.services = resp_data
+            if self.cache_services_data is not None:
+                self.cache_services_data = resp_data
 
-            #build the regex that we can use later.
-            _regex = []
-            for each in self.get_services():
-                _regex.append('|'.join(each.get('regex',[])))
-
-            self._regex = re.compile('|'.join(_regex))
+            self.set_services(resp_data)
 
         return self.services
 
