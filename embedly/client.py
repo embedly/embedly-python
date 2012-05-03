@@ -22,7 +22,7 @@ class Embedly(object):
     Client
 
     """
-    def __init__(self, key=None, user_agent=USER_AGENT):
+    def __init__(self, key=None, user_agent=USER_AGENT, cache_services_data=None ):
         """
         Initialize the Embedly client
 
@@ -36,6 +36,7 @@ class Embedly(object):
         self.user_agent = user_agent
         self.key = key
         self.services = []
+        self.cache_services_data= None
 
         self._regex = None
 
@@ -65,6 +66,9 @@ class Embedly(object):
 
         if resp['status'] == '200':
             resp_data = json.loads(content)
+            if self.cache_services_data :
+                self.cache_services_data = resp_data
+
             self.set_services(resp_data)
 
         return self.services
