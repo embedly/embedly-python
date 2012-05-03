@@ -39,6 +39,16 @@ class Embedly(object):
 
         self._regex = None
 
+    def set_services(self,services_data):
+        self.services = services_data
+
+        #build the regex that we can use later.
+        _regex = []
+        for each in self.get_services():
+            _regex.append('|'.join(each.get('regex',[])))
+
+        self._regex = re.compile('|'.join(_regex))
+
     def get_services(self):
         """
         get_services makes call to services end point of api.embed.ly to fetch
@@ -55,14 +65,7 @@ class Embedly(object):
 
         if resp['status'] == '200':
             resp_data = json.loads(content)
-            self.services = resp_data
-
-            #build the regex that we can use later.
-            _regex = []
-            for each in self.get_services():
-                _regex.append('|'.join(each.get('regex',[])))
-
-            self._regex = re.compile('|'.join(_regex))
+            self.set_services(resp_data)
 
         return self.services
 
