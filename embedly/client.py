@@ -66,7 +66,7 @@ class Embedly(object):
 
         if resp['status'] == '200':
             resp_data = json.loads(content)
-            if self.cache_services_data :
+            if self.cache_services_data is not None:
                 self.cache_services_data = resp_data
 
             self.set_services(resp_data)
