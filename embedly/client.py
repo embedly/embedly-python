@@ -22,7 +22,7 @@ class Embedly(object):
     Client
 
     """
-    def __init__(self, key=None, user_agent=USER_AGENT):
+    def __init__(self, key=None, user_agent=USER_AGENT, timeout=60):
         """
         Initialize the Embedly client
 
@@ -34,6 +34,7 @@ class Embedly(object):
         :returns: None
         """
         self.user_agent = user_agent
+        self.timeout = timeout
         self.key = key
         self.services = []
 
@@ -49,7 +50,7 @@ class Embedly(object):
 
         url = 'http://api.embed.ly/1/services/python'
 
-        http = httplib2.Http()
+        http = httplib2.Http(timeout=self.timeout)
         headers = {'User-Agent' : self.user_agent}
         resp, content = http.request(url, headers=headers)
 
@@ -118,7 +119,7 @@ class Embedly(object):
 
         url = 'http://api.embed.ly/%s/%s?%s' % (version, method, query)
 
-        http = httplib2.Http()
+        http = httplib2.Http(timeout=self.timeout)
 
         headers = {'User-Agent' : self.user_agent}
 
