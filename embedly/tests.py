@@ -4,6 +4,7 @@ import unittest
 from embedly.client import Embedly
 from embedly.models import Url
 
+
 class EmbedlyTestCase(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -124,15 +125,14 @@ class EmbedlyTestCase(unittest.TestCase):
         self.assertTrue(objs[1].type == 'error',objs[1].dict)
 
         objs = list(http.oembed(['http://blog.embed.ly/lsbsdlfldsf/asdf/kl',
-                            'http://yfrog.com/h22eu4j']))
+                                 'http://yfrog.com/h22eu4j']))
         self.assertTrue(objs[0].type == 'error',objs[0].dict)
         self.assertTrue(objs[1].type == 'photo',objs[1].dict)
 
         objs = list(http.oembed(['http://yfrog.com/h22eu4j',
-                            'http://www.scribd.com/asdf/asdf/asdfasdf']))
+                                 'http://www.scribd.com/asdf/asdf/asdfasdf']))
         self.assertTrue(objs[0].type == 'photo',objs[0].dict)
         self.assertTrue(objs[1].type == 'error',objs[1].dict)
-
 
     def test_too_many_urls(self):
         http = Embedly(self.key)
@@ -143,6 +143,7 @@ class EmbedlyTestCase(unittest.TestCase):
             self.fail('too many urls, should have thrown an error')
         except Exception as e:
             self.assertTrue(type(e), ValueError)
+
 
 if __name__ == '__main__':
     unittest.main()
