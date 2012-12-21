@@ -3,6 +3,7 @@ Models
 
 Creates a sudo model class that makes it easy to access attributes
 """
+from __future__ import unicode_literals
 class AttrDict(object):
     """
     UserDict is a pain in the ass. Let's just make our own.
@@ -30,11 +31,8 @@ class AttrDict(object):
             return object.__getattr__(self, name)
         try:
             return self.data[name]
-        except KeyError, e:
+        except KeyError as e:
             return None
-            raise AttributeError(
-                "%s instance has no attribute '%s'" % (self.__class__.__name__,
-                                                       name))
 
     def __setattr__(self, name, value):
         if name in ['data', 'method']:
@@ -55,6 +53,7 @@ class AttrDict(object):
     def dict(self):
         return self.data
 
+
 class Url(AttrDict):
 
     def __init__(self, data=None, method=None, original_url=None):
@@ -68,7 +67,7 @@ class Url(AttrDict):
         return self.__unicode__().encode("utf-8")
 
     def __unicode__(self):
-        r = u'<%s ' % self.method.title()
+        r = '<%s ' % self.method.title()
 
         if self.original_url:
             r += self.original_url
