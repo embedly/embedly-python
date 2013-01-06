@@ -4,18 +4,21 @@ Client
 
 The embedly object that interacts with the service
 """
+from __future__ import absolute_import
 import re
-import urllib
 import httplib2
-
+import json
 try:
-    import json
+    from urllib import quote, urlencode
 except ImportError:
-    import simplejson as json
+    # py3k
+    from urllib.parse import quote, urlencode
 
-from models import Url
+
+from .models import Url
 
 USER_AGENT = 'Mozilla/5.0 (compatible; embedly-python/0.3;)'
+
 
 class Embedly(object):
     """
@@ -97,8 +100,8 @@ class Embedly(object):
 
         # Throw an error early for too many URLs
         if multi and len(url_or_urls) > 20:
-            raise ValueError('Embedly accepts only 20 urls at a time. Url ' \
-                'Count:%s' % len(url_or_urls))
+            raise ValueError('Embedly accepts only 20 urls at a time. Url '
+                             'Count:%s' % len(url_or_urls))
 
         query = ''
 
@@ -106,34 +109,34 @@ class Embedly(object):
 
         #make sure that a key was set on the client or passed in.
         if not key:
-            raise ValueError('Requires a key. None given: %s' % (key))
+            raise ValueError('Requires a key. None given: %s' % key)
 
         kwargs['key'] = key
 
-        query += urllib.urlencode(kwargs)
+        query += urlencode(kwargs)
 
         if multi:
-            query += '&urls=%s&' % ','.join([urllib.quote(url) for url in url_or_urls])
+            query += '&urls=%s&' % ','.join([quote(url) for url in url_or_urls])
         else:
-            query += '&url=%s' % urllib.quote(url_or_urls)
+            query += '&url=%s' % quote(url_or_urls)
 
         url = 'http://api.embed.ly/%s/%s?%s' % (version, method, query)
 
         http = httplib2.Http(timeout=self.timeout)
 
-        headers = {'User-Agent' : self.user_agent}
+        headers = {'User-Agent': self.user_agent}
 
         resp, content = http.request(url, headers=headers)
 
         if resp['status'] == '200':
-            data = json.loads(content)
+            data = json.loads(content.decode('utf-8'))
 
             if kwargs.get('raw', False):
                 data['raw'] = content
         else:
-            data = {'type' : 'error',
-                    'error' : True,
-                    'error_code' : int(resp['status'])}
+            data = {'type': 'error',
+                    'error': True,
+                    'error_code': int(resp['status'])}
 
         if multi:
             return map(lambda url, data: Url(data, method, url),
