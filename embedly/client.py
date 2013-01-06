@@ -4,6 +4,7 @@ Client
 
 The embedly object that interacts with the service
 """
+from __future__ import absolute_import
 import re
 import httplib2
 import json
@@ -14,7 +15,7 @@ except ImportError:
     from urllib.parse import quote, urlencode
 
 
-from models import Url
+from .models import Url
 
 USER_AGENT = 'Mozilla/5.0 (compatible; embedly-python/0.3;)'
 
