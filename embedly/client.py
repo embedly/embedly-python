@@ -161,3 +161,9 @@ class Embedly(object):
         oembed
         """
         return self._get(2, 'objectify', url_or_urls, **kwargs)
+
+    def extract(self, url_or_urls, **kwargs):
+        """
+        oembed
+        """
+        return self._get(1, 'extract', url_or_urls, **kwargs)
