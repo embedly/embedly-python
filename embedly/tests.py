@@ -6,19 +6,9 @@ from embedly.models import Url
 
 
 class EmbedlyTestCase(unittest.TestCase):
-
-    def __init__(self, *args, **kwargs):
+    def setUp(self):
         self.key = 'internal'
-
-        if not self.key:
-            raise ValueError('Set envirnomental varible EMBEDLY_API_KEY ' +
-                             'before running these tests like so: $ export ' +
-                             'EMBEDLY_API_KEY=key')
-
-        super(EmbedlyTestCase, self).__init__(*args, **kwargs)
-
-    def test_model(self):
-        data = {
+        self.data = {
             'provider_url': 'http://www.google.com/',
             'safe': True,
             'description': 'Google',
@@ -40,35 +30,72 @@ class EmbedlyTestCase(unittest.TestCase):
             'embeds': []
         }
 
-        obj = Url(data, 'preview', 'http://google.com/')
+    def test_model(self):
+        obj = Url(self.data, 'preview', 'http://google.com/')
 
-        self.assertTrue(len(obj) is 16)
-        self.assertTrue(len(obj.values()) is 16)
-        self.assertTrue(len(obj.keys()) is 16)
-        self.assertTrue(len(obj.items()) is 16)
+        self.assertEqual(len(obj), 16)
+        self.assertEqual(len(obj.values()), 16)
+        self.assertEqual(len(obj.keys()), 16)
+        self.assertEqual(len(obj.items()), 16)
 
+        # look for expected data
         self.assertTrue('type' in obj.keys())
         self.assertTrue('html' in obj.values())
 
-        #Get the object
-        self.assertTrue(obj.type == 'html')
-        self.assertTrue(obj['type'] == 'html')
-        self.assertTrue(obj.get('type') == 'html')
+        # adding new data
+        obj['new_key'] = "new value"
+        self.assertEqual(len(obj), 17)
+        self.assertEqual(len(obj.items()), 17)
+        self.assertTrue('new_key' in obj.keys())
+        self.assertTrue('new value' in obj.values())
 
-        #nope
-        self.assertTrue(obj.nothing is None)
+        # our special attrs shouldn't be in the data dict
+        self.assertFalse('method' in obj.keys())
+        self.assertFalse('original_url' in obj.keys())
 
+        with self.assertRaises(KeyError):
+            obj['method']
+        with self.assertRaises(KeyError):
+            obj['original_url']
+
+        # attr access = dict access
         obj.nothing = 'something'
-        self.assertTrue(obj.nothing == 'something')
-
+        self.assertEqual(obj['nothing'], 'something')
         obj['nothing'] = 'maybe'
-        self.assertTrue(obj['nothing'] == 'maybe')
+        self.assertEqual(obj.nothing, 'maybe')
 
         del obj['nothing']
         self.assertTrue(obj.nothing is None)
 
-        #Deep Get attrs
-        self.assertTrue(obj.images[0].width is 275)
+    def test_model_attributes(self):
+        obj = Url(self.data, 'preview', 'http://original.url.com/')
+
+        self.assertEqual(obj.method, 'preview')
+        self.assertEqual(obj.original_url, 'http://original.url.com/')
+
+    def test_model_with_empty_data(self):
+        obj = Url()
+
+        self.assertEqual(obj.data, {})
+        self.assertEqual(obj.method, 'url')
+        self.assertTrue(obj.original_url is None)
+
+    def test_model_data(self):
+        obj = Url(self.data, 'preview', 'http://google.com/')
+
+        self.assertEqual(obj['type'], 'html')
+        self.assertEqual(obj.get('type'), 'html')
+        self.assertEqual(obj.data['type'], 'html')
+        self.assertEqual(obj.data.get('type'), 'html')
+
+        obj['nothing'] = 'something'
+        self.assertEqual(obj['nothing'], 'something')
+        self.assertEqual(obj.get('nothing'), 'something')
+        self.assertEqual(obj.data['nothing'], 'something')
+        self.assertEqual(obj.data.get('nothing'), 'something')
+
+        # deep get attrs
+        self.assertEqual(obj.images[0].width, 275)
         self.assertTrue(obj.images[0].nothing is None)
         self.assertTrue(obj.object.type is None)
 
@@ -76,72 +103,69 @@ class EmbedlyTestCase(unittest.TestCase):
         http = Embedly(self.key)
 
         obj = http.oembed('http://www.scribd.com/doc/13994900/Easter')
-        self.assertTrue(obj.provider_url == 'http://www.scribd.com/')
+        self.assertEqual(obj.provider_url, 'http://www.scribd.com/')
 
         obj = http.oembed('http://www.scribd.com/doc/28452730/Easter-Cards')
-        self.assertTrue(obj.provider_url == 'http://www.scribd.com/')
+        self.assertEqual(obj.provider_url, 'http://www.scribd.com/')
 
         obj = http.oembed('http://www.youtube.com/watch?v=Zk7dDekYej0')
-        self.assertTrue(obj.provider_url == 'http://www.youtube.com/')
+        self.assertEqual(obj.provider_url, 'http://www.youtube.com/')
 
         obj = http.oembed('http://yfrog.com/h22eu4j')
-        self.assertTrue(obj.provider_url == 'http://yfrog.com')
+        self.assertEqual(obj.provider_url, 'http://yfrog.com')
 
     def test_providers(self):
         http = Embedly(self.key)
 
         objs = list(http.oembed(['http://www.scribd.com/doc/13994900/Easter',
                                  'http://www.scribd.com/doc/28452730/Easter-Cards']))
-        self.assertTrue(objs[0].provider_url == 'http://www.scribd.com/')
-        self.assertTrue(objs[1].provider_url == 'http://www.scribd.com/')
+        self.assertEqual(objs[0].provider_url, 'http://www.scribd.com/')
+        self.assertEqual(objs[1].provider_url, 'http://www.scribd.com/')
 
         objs = list(http.oembed(['http://www.youtube.com/watch?v=Zk7dDekYej0',
                                  'http://yfrog.com/h22eu4']))
-        self.assertTrue(objs[0].provider_url == 'http://www.youtube.com/')
-        self.assertTrue(objs[1].provider_url == 'http://yfrog.com')
+        self.assertEqual(objs[0].provider_url, 'http://www.youtube.com/')
+        self.assertEqual(objs[1].provider_url, 'http://yfrog.com')
 
     def test_error(self):
         http = Embedly(self.key)
 
         obj = http.oembed('http://www.embedly.com/this/is/a/bad/url')
-        self.assertTrue(obj.error is True, obj.dict)
+        self.assertTrue(obj['error'])
         obj = http.oembed('http://blog.embed.ly/lsbsdlfldsf/asdfkljlas/klajsdlfkasdf')
-        self.assertTrue(obj.error is True, obj.dict)
+        self.assertTrue(obj['error'])
         obj = http.oembed('http://twitpic/nothing/to/see/here')
-        self.assertTrue(obj.error is True, obj.dict)
+        self.assertTrue(obj['error'])
 
     def test_multi_errors(self):
         http = Embedly(self.key)
 
         objs = list(http.oembed(['http://www.embedly.com/this/is/a/bad/url',
                                  'http://blog.embed.ly/alsd/slsdlf/asdlfj']))
-        self.assertTrue(objs[0].type == 'error', objs[0].dict)
-        self.assertTrue(objs[1].type == 'error', objs[1].dict)
+        self.assertEqual(objs[0].type, 'error')
+        self.assertEqual(objs[1].type, 'error')
 
         objs = list(http.oembed(['http://blog.embed.ly/lsbsdlfldsf/asdf/kl',
                                  'http://twitpic.com/nothing/to/see/here']))
-        self.assertTrue(objs[0].type == 'error',objs[0].dict)
-        self.assertTrue(objs[1].type == 'error',objs[1].dict)
+        self.assertEqual(objs[0].type, 'error')
+        self.assertEqual(objs[1].type, 'error')
 
         objs = list(http.oembed(['http://blog.embed.ly/lsbsdlfldsf/asdf/kl',
                                  'http://yfrog.com/h22eu4j']))
-        self.assertTrue(objs[0].type == 'error',objs[0].dict)
-        self.assertTrue(objs[1].type == 'photo',objs[1].dict)
+        self.assertEqual(objs[0].type, 'error')
+        self.assertEqual(objs[1].type, 'photo')
 
         objs = list(http.oembed(['http://yfrog.com/h22eu4j',
                                  'http://www.scribd.com/asdf/asdf/asdfasdf']))
-        self.assertTrue(objs[0].type == 'photo',objs[0].dict)
-        self.assertTrue(objs[1].type == 'error',objs[1].dict)
+        self.assertEqual(objs[0].type, 'photo')
+        self.assertEqual(objs[1].type, 'error')
 
-    def test_too_many_urls(self):
+    def test_exception_on_too_many_urls(self):
         http = Embedly(self.key)
-
         urls = ['http://embed.ly'] * 21
-        try:
+
+        with self.assertRaises(ValueError):
             http.oembed(urls)
-            self.fail('too many urls, should have thrown an error')
-        except Exception as e:
-            self.assertTrue(type(e), ValueError)
 
 
 if __name__ == '__main__':
