@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import unittest
+import json
 
 from embedly.client import Embedly
 from embedly.models import Url
@@ -72,6 +73,10 @@ class EmbedlyTestCase(unittest.TestCase):
         self.assertTrue(obj.images[0].width is 275)
         self.assertTrue(obj.images[0].nothing is None)
         self.assertTrue(obj.object.type is None)
+    def test_model_data_can_serialize(self):
+        obj = Url({'a': {'key': 'value'}})
+        unserialzed = json.loads(json.dumps(obj.data))
+        self.assertDictEqual(obj.data, unserialzed)
 
     def test_provider(self):
         http = Embedly(self.key)
