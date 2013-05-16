@@ -22,7 +22,6 @@ class EmbedlyTestCase(unittest.TestCase):
             'provider_url': 'http://www.google.com/',
             'safe': True,
             'description': 'Google',
-            'original_url': 'http://google.com/',
             'url': 'http://www.google.com/',
             'type': 'html',
             'object': {},
@@ -43,10 +42,10 @@ class EmbedlyTestCase(unittest.TestCase):
 
         obj = Url(data, 'preview', 'http://google.com/')
 
-        self.assertTrue(len(obj) is 17)
-        self.assertTrue(len(obj.values()) is 17)
-        self.assertTrue(len(obj.keys()) is 17)
-        self.assertTrue(len(obj.items()) is 17)
+        self.assertTrue(len(obj) is 16)
+        self.assertTrue(len(obj.values()) is 16)
+        self.assertTrue(len(obj.keys()) is 16)
+        self.assertTrue(len(obj.items()) is 16)
 
         self.assertTrue('type' in obj.keys())
         self.assertTrue('html' in obj.values())
