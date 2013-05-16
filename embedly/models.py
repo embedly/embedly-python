@@ -67,10 +67,4 @@ class Url(AttrDict):
         return self.__unicode__().encode("utf-8")
 
     def __unicode__(self):
-        r = '<%s ' % self.method.title()
-
-        if self.original_url:
-            r += self.original_url
-
-        r += ' >'
-        return r
+        return '<%s %s>' % (self.method.title(), self.original_url or "")
