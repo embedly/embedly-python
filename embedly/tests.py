@@ -42,7 +42,7 @@ class EmbedlyTestCase(unittest.TestCase):
             'embeds': []
         }
 
-        obj = Url(data, 'preview', 'http://google.com/')
+        obj = Url(data, 'preview', 'http://original.url.com/')
 
         self.assertTrue(len(obj) is 17)
         self.assertTrue(len(obj.values()) is 17)
@@ -56,6 +56,20 @@ class EmbedlyTestCase(unittest.TestCase):
         self.assertEqual(obj.get('type'), 'html')
         self.assertEqual(obj.data['type'], 'html')
         self.assertEqual(obj.data.get('type'), 'html')
+
+        # our special attrs shouldn't be in the data dict
+        self.assertFalse('method' in obj.keys())
+        with self.assertRaises(KeyError):
+            obj['method']
+
+        # attrs and data dict values should be separate
+        self.assertEqual(obj['original_url'], 'http://google.com/')
+        self.assertEqual(obj.original_url, 'http://original.url.com/')
+
+        obj.new_attr = 'attr value'
+        obj['new_key'] = 'dict value'
+        self.assertEqual(obj.new_attr, 'attr value')
+        self.assertEqual(obj['new_key'], 'dict value')
 
     def test_model_data_can_serialize(self):
         obj = Url({'a': {'key': 'value'}})
