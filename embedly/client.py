@@ -14,10 +14,11 @@ except ImportError:
     # py3k
     from urllib.parse import quote, urlencode
 
-
 from .models import Url
 
-USER_AGENT = 'Mozilla/5.0 (compatible; embedly-python/0.3;)'
+
+__version__ = '0.4.3'
+USER_AGENT = 'Mozilla/5.0 (compatible; embedly-python/%s;)' % __version__
 
 
 class Embedly(object):

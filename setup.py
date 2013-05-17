@@ -7,8 +7,10 @@ extra = {}
 
 required = ['httplib2']
 
-if sys.version_info[:2] < (2,6):
+if sys.version_info[:2] < (2, 6):
     required.append('simplejson')
+
+version = __import__('embedly').__version__
 
 if os.path.exists("README.rst"):
     long_description = codecs.open("README.rst", "r", "utf-8").read()
@@ -17,20 +19,20 @@ else:
 
 
 setup(
-    name = 'Embedly',
-    version = '0.4.3',
-    author = 'Embed.ly, Inc.',
-    author_email = 'support@embed.ly',
-    description = 'Python Library for Embedly',
+    name='Embedly',
+    version=version,
+    author='Embed.ly, Inc.',
+    author_email='support@embed.ly',
+    description='Python Library for Embedly',
     long_description=long_description,
-    license = """
+    license="""
     Copyright (c) 2011, Embed.ly, Inc.
     All rights reserved.  Released under the 3-clause BSD license.
     """,
-    url = "https://github.com/embedly/embedly-python",
-    packages = ['embedly'],
-    install_requires = required,
-    zip_safe = True,
+    url="https://github.com/embedly/embedly-python",
+    packages=['embedly'],
+    install_requires=required,
+    zip_safe=True,
     classifiers=(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
