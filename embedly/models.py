@@ -27,15 +27,15 @@ class AttrDict(object):
         self.data = data
 
     def __getattr__(self, name):
-        if name in ['data', 'method']:
+        if name in ['data', 'method', 'original_url']:
             return object.__getattr__(self, name)
         try:
             return self.data[name]
-        except KeyError as e:
+        except KeyError:
             return None
 
     def __setattr__(self, name, value):
-        if name in ['data', 'method']:
+        if name in ['data', 'method', 'original_url']:
             object.__setattr__(self, name, value)
         else:
             self.data[name] = value
@@ -67,10 +67,4 @@ class Url(AttrDict):
         return self.__unicode__().encode("utf-8")
 
     def __unicode__(self):
-        r = '<%s ' % self.method.title()
-
-        if self.original_url:
-            r += self.original_url
-
-        r += ' >'
-        return r
+        return '<%s %s>' % (self.method.title(), self.original_url or "")
