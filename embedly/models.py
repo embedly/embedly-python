@@ -1,6 +1,9 @@
 from __future__ import unicode_literals
 
-from UserDict import IterableUserDict
+try:
+    from UserDict import IterableUserDict
+except ImportError:
+    from collections import UserDict as IterableUserDict
 
 class Url(IterableUserDict, object):
     """
