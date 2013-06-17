@@ -28,15 +28,13 @@ Here is a simple example and then we will go into the objects::
   >>> from embedly import Embedly
   >>> client = Embedly(:key)
   >>> obj = client.oembed('http://instagr.am/p/BL7ti/')
-  >>> obj.type
-  u'photo'
   >>> obj['type']
   u'photo'
-  >>> obj.url
+  >>> obj['url']
   u'http://distillery.s3.amazonaws.com/media/2011/01/24/cdd759a319184cb79793506607ff5746_7.jpg'
 
   >>> obj = client.oembed('http://instagr.am/p/error')
-  >>> obj.error
+  >>> obj['error']
   True
 
 Embedly Client
@@ -53,10 +51,20 @@ The client object now has a bunch of different methods that you can use.
 
 ``oembed``
   Corresponds to the `oEmbed endpoint
-  <http://embed.ly/docs/endpoints/1/oembed>`_. Passes back a simple object that
-  allows you to retrieve a title, thumbnail, description and the embed html::
+  <http://embed.ly/docs/embed/api/endpoints/1/oembed>`_. Passes back an object
+  that allows you to retrieve a title, thumbnail, description and the embed
+  html::
 
     >>> client.oembed('http://vimeo.com/18150336')
+    <embedly.models.Url at 0x10223d950>
+
+``extract``
+  Corresponds to the `Extract endpoint
+  <http://embed.ly/docs/extract/api/endpoints/1/extract>`_. Passes back an
+  object that allows you to retrieve a title, description, content, html and a
+  list of images.::
+
+    >>> client.extract('http://vimeo.com/18150336')
     <embedly.models.Url at 0x10223d950>
 
 ``preview``
@@ -120,16 +128,11 @@ attributes. We will go through a few, but you should read the `documentation
   # Url Object can be accessed like a dictionary
   >>> obj['type']
   u'video'
-  # Data can also be accessed like attributes
-  >> obj.type
-  u'video'
-  # Invalid attributes are returned as None
-  >>> obj.notanattribute
 
-  # The url object always has an ``orginal_url`` attrbiute.
+  # The url object always has an ``original_url`` attrbiute.
   >>> obj.original_url
   u'http://vimeo.com/18150336'
-  # The method used to retrive the URL is also on the obj
+  # The method used to retrieve the URL is also on the obj
   >>> obj.method
   u'oembed'
 
@@ -137,9 +140,9 @@ For the Preview and Objectify endpoints the sub objects can also be accessed in
 the same manner.
 
   >>> obj = client.preview('http://vimeo.com/18150336', words=10)
-  >>> obj.object.type
+  >>> obj['object']['type']
   u'video'
-  >>> obj.images[0].url
+  >>> obj['images'][0].url
   u'http://b.vimeocdn.com/ts/117/311/117311910_1280.jpg'
 
 Error Handling
@@ -150,11 +153,11 @@ an error. For example if we use an invalid key, we will get a 401 response back
 
   >>> client = Embedly('notakey')
   >>> obj = client.preview('http://vimeo.com/18150336', words=10)
-  >>> obj.error
+  >>> obj['error']
   True
-  >>> obj.error_code
+  >>> obj['error_code']
   401
 
 Copyright
 ---------
-Copyright (c) 2011 Embed.ly, Inc. See LICENSE for details.
+Copyright (c) 2013 Embed.ly, Inc. See LICENSE for details.
