@@ -61,7 +61,13 @@ class EmbedlyTestCase(unittest.TestCase):
         self.assertEqual(obj['new_key'], 'dict value')
 
     def test_model_data_can_serialize(self):
-        obj = Url({'a': {'key': 'value'}})
+        obj = Url({'hash': {'key': 'value'},
+                   'none': None,
+                   'empty': '',
+                   'float': 1.234,
+                   'int': 1,
+                   'string': 'string',
+                   'array': [0, -1]})
         unserialzed = json.loads(json.dumps(obj.data))
         self.assertDictEqual(obj.data, unserialzed)
 

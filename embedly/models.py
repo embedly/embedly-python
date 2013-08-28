@@ -22,3 +22,9 @@ class Url(IterableUserDict, object):
 
     def __unicode__(self):
         return '<%s %s>' % (self.method.title(), self.original_url or "")
+
+    def __getitem__(self, key):
+      if (key in self.data) and (self.data[key] == None):
+        return ''
+      else:
+        return self.data[key]
