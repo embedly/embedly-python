@@ -53,7 +53,8 @@ class Embedly(object):
         the list of supported providers and their regexes
         """
 
-        if self.services: return self.services
+        if self.services:
+            return self.services
 
         url = 'http://api.embed.ly/1/services/python'
 
@@ -66,10 +67,10 @@ class Embedly(object):
             resp_data = json.loads(content)
             self.services = resp_data
 
-            #build the regex that we can use later.
+            # build the regex that we can use later
             _regex = []
             for each in self.get_services():
-                _regex.append('|'.join(each.get('regex',[])))
+                _regex.append('|'.join(each.get('regex', [])))
 
             self._regex = re.compile('|'.join(_regex))
 
@@ -100,10 +101,10 @@ class Embedly(object):
             raise ValueError('%s requires a url or a list of urls given: %s' %
                              (method.title(), url_or_urls))
 
-        #A flag we can use instead of calling isinstance all the time.
+        # a flag we can use instead of calling isinstance() all the time
         multi = isinstance(url_or_urls, list)
 
-        # Throw an error early for too many URLs
+        # throw an error early for too many URLs
         if multi and len(url_or_urls) > 20:
             raise ValueError('Embedly accepts only 20 urls at a time. Url '
                              'Count:%s' % len(url_or_urls))
@@ -112,7 +113,7 @@ class Embedly(object):
 
         key = kwargs.get('key', self.key)
 
-        #make sure that a key was set on the client or passed in.
+        # make sure that a key was set on the client or passed in
         if not key:
             raise ValueError('Requires a key. None given: %s' % key)
 
