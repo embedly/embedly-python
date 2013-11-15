@@ -1,6 +1,10 @@
 from __future__ import unicode_literals
-import unittest
 import json
+
+try:
+    import unittest2 as unittest  # Python 2.6
+except ImportError:
+    import unittest
 
 from embedly.client import Embedly
 from embedly.models import Url
@@ -87,7 +91,6 @@ class EmbedlyTestCase(unittest.TestCase):
         obj = http.oembed('http://yfrog.com/h22eu4j')
         self.assertEqual(obj['provider_url'], 'http://yfrog.com')
 
-
     def test_providers(self):
         http = Embedly(self.key)
 
@@ -101,7 +104,6 @@ class EmbedlyTestCase(unittest.TestCase):
                                  'http://yfrog.com/h22eu4']))
         self.assertEqual(objs[0]['provider_url'], 'http://www.youtube.com/')
         self.assertEqual(objs[1]['provider_url'], 'http://yfrog.com')
-
 
     def test_error(self):
         http = Embedly(self.key)
@@ -136,7 +138,6 @@ class EmbedlyTestCase(unittest.TestCase):
                                  'http://www.scribd.com/asdf/asdf/asdfasdf']))
         self.assertEqual(objs[0]['type'], 'photo')
         self.assertEqual(objs[1]['type'], 'error')
-
 
     def test_exception_on_too_many_urls(self):
         http = Embedly(self.key)

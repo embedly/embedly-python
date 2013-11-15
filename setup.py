@@ -6,6 +6,10 @@ from setuptools import setup
 extra = {}
 
 required = ['httplib2']
+tests_require = []
+
+if sys.version_info[:2] < (2, 7):
+    tests_require.append('unittest2')
 
 if sys.version_info[:2] < (2, 6):
     required.append('simplejson')
@@ -36,6 +40,7 @@ setup(
     url="https://github.com/embedly/embedly-python",
     packages=['embedly'],
     install_requires=required,
+    tests_require=tests_require,
     zip_safe=True,
     classifiers=(
         'Development Status :: 5 - Production/Stable',
