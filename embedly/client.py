@@ -58,7 +58,8 @@ class Embedly(object):
         url = 'http://api.embed.ly/1/services/python'
 
         http = httplib2.Http(timeout=self.timeout)
-        headers = {'User-Agent' : self.user_agent}
+        headers = {'User-Agent': self.user_agent,
+                   'Connection': 'close'}
         resp, content = http.request(url, headers=headers)
 
         if resp['status'] == '200':
@@ -128,7 +129,8 @@ class Embedly(object):
 
         http = httplib2.Http(timeout=self.timeout)
 
-        headers = {'User-Agent': self.user_agent}
+        headers = {'User-Agent': self.user_agent,
+                   'Connection': 'close'}
 
         resp, content = http.request(url, headers=headers)
 
