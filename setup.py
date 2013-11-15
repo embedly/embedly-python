@@ -10,7 +10,11 @@ required = ['httplib2']
 if sys.version_info[:2] < (2, 6):
     required.append('simplejson')
 
-version = __import__('embedly').__version__
+def get_version():
+    with open(os.path.join('embedly', '__init__.py')) as f:
+        for line in f:
+            if line.startswith('__version__ ='):
+                return line.split('=')[1].strip().strip('"\'')
 
 if os.path.exists("README.rst"):
     long_description = codecs.open("README.rst", "r", "utf-8").read()
@@ -20,7 +24,7 @@ else:
 
 setup(
     name='Embedly',
-    version=version,
+    version=get_version(),
     author='Embed.ly, Inc.',
     author_email='support@embed.ly',
     description='Python Library for Embedly',

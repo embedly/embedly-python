@@ -17,8 +17,9 @@ except ImportError:
 from .models import Url
 
 
-__version__ = '0.4.3'
-USER_AGENT = 'Mozilla/5.0 (compatible; embedly-python/%s;)' % __version__
+def get_user_agent():
+    from . import __version__
+    return 'Mozilla/5.0 (compatible; embedly-python/%s;)' % __version__
 
 
 class Embedly(object):
@@ -26,22 +27,24 @@ class Embedly(object):
     Client
 
     """
-    def __init__(self, key=None, user_agent=USER_AGENT, timeout=60):
+    def __init__(self, key=None, user_agent=None, timeout=60):
         """
         Initialize the Embedly client
 
-        :param user_agent: User Agent passed to Embedly
-        :type user_agent: str
         :param key: Embedly Pro key
         :type key: str
+        :param user_agent: User Agent passed to Embedly
+        :type user_agent: str
+        :param timeout: timeout for HTTP connection attempts
+        :type timeout: int
 
         :returns: None
         """
-        self.user_agent = user_agent
-        self.timeout = timeout
         self.key = key
-        self.services = []
+        self.user_agent = user_agent or get_user_agent()
+        self.timeout = timeout
 
+        self.services = []
         self._regex = None
 
     def get_services(self):
