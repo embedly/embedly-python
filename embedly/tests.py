@@ -1,19 +1,17 @@
 from __future__ import unicode_literals
+import re
 import json
 
-try:
-    import unittest2 as unittest  # Python 2.6
-except ImportError:
-    import unittest
+try:  # pragma: no cover
+    import unittest2 as unittest  # Python 2.6   # pragma: no cover
+except ImportError:  # pragma: no cover
+    import unittest  # pragma: no cover
 
 from embedly.client import Embedly
 from embedly.models import Url
 
 
-class EmbedlyTestCase(unittest.TestCase):
-    def setUp(self):
-        self.key = 'internal'
-
+class UrlTestCase(unittest.TestCase):
     def test_model(self):
         data = {
             'provider_url': 'http://www.google.com/',
@@ -74,6 +72,24 @@ class EmbedlyTestCase(unittest.TestCase):
                    'array': [0, -1]})
         unserialzed = json.loads(json.dumps(obj.data))
         self.assertDictEqual(obj.data, unserialzed)
+
+
+class EmbedlyTestCase(unittest.TestCase):
+    def setUp(self):
+        self.key = 'internal'
+
+    def test_requires_api_key(self):
+        with self.assertRaises(ValueError):
+            Embedly()._get(1, "test", "http://fake")
+
+    def test_requires_url(self):
+        with self.assertRaises(ValueError):
+            Embedly(self.key)._get(1, "test", None)
+
+    def test_exception_on_too_many_urls(self):
+        urls = ['http://embed.ly'] * 21
+        with self.assertRaises(ValueError):
+            Embedly(self.key)._get(1, "test", urls)
 
     def test_provider(self):
         http = Embedly(self.key)
@@ -139,13 +155,68 @@ class EmbedlyTestCase(unittest.TestCase):
         self.assertEqual(objs[0]['type'], 'photo')
         self.assertEqual(objs[1]['type'], 'error')
 
-    def test_exception_on_too_many_urls(self):
-        http = Embedly(self.key)
-        urls = ['http://embed.ly'] * 21
+    def test_raw_content_in_request(self):
+        client = Embedly(self.key)
+        response = client.oembed(
+            'http://www.scribd.com/doc/13994900/Easter',
+            raw=True)
 
-        with self.assertRaises(ValueError):
-            http.oembed(urls)
+        self.assertEqual(response['raw'], response.data['raw'])
+
+        parsed = json.loads(response['raw'].decode('utf-8'))
+        self.assertEqual(response['type'], parsed['type'])
+
+    def test_regex_url_matches(self):
+        regex = [
+            'http://.*youtube\\.com/watch.*',
+            'http://www\\.vimeo\\.com/.*']
+        client = Embedly(self.key)
+        client._regex = re.compile('|'.join(regex))
+
+        self.assertTrue(
+            client.is_supported('http://www.youtube.com/watch?v=Zk7dDekYej0'))
+        self.assertTrue(
+            client.is_supported('http://www.vimeo.com/18150336'))
+        self.assertFalse(
+            client.is_supported('http://vimeo.com/18150336'))
+        self.assertFalse(
+            client.is_supported('http://yfrog.com/h22eu4j'))
+
+    def test_services_can_be_manually_configured(self):
+        client = Embedly(self.key)
+        client.services = ['nothing', 'like', 'real', 'response', 'data']
+
+        self.assertTrue('nothing' in client.get_services())
+        self.assertEqual(len(client.get_services()), 5)
+
+    def test_get_services_retrieves_data_and_builds_regex(self):
+        client = Embedly(self.key)
+        client.get_services()
+
+        self.assertGreater(len(client.services), 0)
+        self.assertTrue(client.regex.match('http://yfrog.com/h22eu4j'))
+
+    def test_extract(self):
+        client = Embedly(self.key)
+        response = client.extract('http://vimeo.com/18150336')
+
+        self.assertEqual(response.method, 'extract')
+        self.assertEqual(response['provider_name'], 'Vimeo')
+
+    def test_preview(self):
+        client = Embedly(self.key)
+        response = client.preview('http://vimeo.com/18150336')
+
+        self.assertEqual(response.method, 'preview')
+        self.assertEqual(response['provider_name'], 'Vimeo')
+
+    def test_objectify(self):
+        client = Embedly(self.key)
+        response = client.objectify('http://vimeo.com/18150336')
+
+        self.assertEqual(response.method, 'objectify')
+        self.assertEqual(response['provider_name'], 'Vimeo')
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__':  # pragma: no cover
+    unittest.main()  # pragma: no cover

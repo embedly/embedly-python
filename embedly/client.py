@@ -8,11 +8,11 @@ from __future__ import absolute_import
 import re
 import httplib2
 import json
-try:
-    from urllib import quote, urlencode
-except ImportError:
-    # py3k
-    from urllib.parse import quote, urlencode
+
+try:  # pragma: no cover
+    from urllib.parse import quote, urlencode  # pragma: no cover
+except ImportError:  # Python 2  # pragma: no cover
+    from urllib import quote, urlencode  # pragma: no cover
 
 from .models import Url
 

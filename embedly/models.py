@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
-try:
-    from UserDict import IterableUserDict
-except ImportError:
-    from collections import UserDict as IterableUserDict
+try:  # pragma: no cover
+    from collections import UserDict as IterableUserDict  # pragma: no cover
+except ImportError:  # Python 2  # pragma: no cover
+    from UserDict import IterableUserDict  # pragma: no cover
+
 
 class Url(IterableUserDict, object):
     """
