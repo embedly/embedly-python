@@ -64,7 +64,7 @@ class Embedly(object):
         resp, content = http.request(url, headers=headers)
 
         if resp['status'] == '200':
-            resp_data = json.loads(content)
+            resp_data = json.loads(content.decode('utf-8'))
             self.services = resp_data
 
             # build the regex that we can use later
