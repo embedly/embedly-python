@@ -69,7 +69,7 @@ class Embedly(object):
 
             # build the regex that we can use later
             _regex = []
-            for each in self.get_services():
+            for each in self.services:
                 _regex.append('|'.join(each.get('regex', [])))
 
             self._regex = re.compile('|'.join(_regex))
