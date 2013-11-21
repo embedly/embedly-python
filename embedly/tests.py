@@ -7,6 +7,11 @@ try:  # pragma: no cover
 except ImportError:  # pragma: no cover
     import unittest  # pragma: no cover
 
+try:  # pragma: no cover
+    from unittest import mock  # pragma: no cover
+except ImportError:  # Python < 3.3  # pragma: no cover
+    import mock  # pragma: no cover
+
 from embedly.client import Embedly
 from embedly.models import Url
 
@@ -182,12 +187,30 @@ class EmbedlyTestCase(unittest.TestCase):
         self.assertFalse(
             client.is_supported('http://yfrog.com/h22eu4j'))
 
+    @mock.patch.object(Embedly, 'get_services')
+    def test_regex_access_triggers_get_services(self, mock_services):
+        client = Embedly(self.key)
+        client.regex
+
+        self.assertTrue(mock_services.called)
+        self.assertIsNone(client._regex)
+
     def test_services_can_be_manually_configured(self):
         client = Embedly(self.key)
         client.services = ['nothing', 'like', 'real', 'response', 'data']
 
         self.assertTrue('nothing' in client.get_services())
         self.assertEqual(len(client.get_services()), 5)
+
+    @mock.patch('httplib2.Http', autospec=True)
+    def test_services_remains_empty_on_failed_http(self, MockHttp):
+        MockHttp.return_value.request.return_value = ({'status': 500}, "")
+
+        client = Embedly(self.key)
+        client.get_services()
+
+        self.assertFalse(client.services)
+        self.assertTrue(MockHttp.return_value.request.called)
 
     def test_get_services_retrieves_data_and_builds_regex(self):
         client = Embedly(self.key)

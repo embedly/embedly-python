@@ -9,6 +9,9 @@ tests_require = []
 if sys.version_info[:2] < (2, 7):
     tests_require.append('unittest2')
 
+if sys.version_info[:2] < (3, 3):
+    tests_require.append('mock')
+
 
 def get_version():
     with open(os.path.join('embedly', '__init__.py')) as f:
