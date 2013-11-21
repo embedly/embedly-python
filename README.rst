@@ -18,6 +18,10 @@ Or setuptools::
   git clone git://github.com/embedly/embedly-python.git
   python setup.py
 
+Setup requires Setuptools 0.7+ or Distribute 0.6.2+ in order to take advantage
+of the ``2to3`` option. Setup will still run on earlier versions but you'll
+see a warning and ``2to3`` won't happen. Read more in the Setuptools
+`docs <http://pythonhosted.org/setuptools/python3.html>`_
 
 Getting Started
 ---------------

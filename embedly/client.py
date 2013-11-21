@@ -4,15 +4,11 @@ Client
 
 The embedly object that interacts with the service
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 import re
 import httplib2
 import json
-
-try:  # pragma: no cover
-    from urllib.parse import quote, urlencode  # pragma: no cover
-except ImportError:  # Python 2  # pragma: no cover
-    from urllib import quote, urlencode  # pragma: no cover
+from urllib import quote, urlencode
 
 from .models import Url
 
