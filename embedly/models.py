@@ -1,11 +1,8 @@
-from __future__ import unicode_literals
-
-try:  # pragma: no cover
-    from collections import UserDict as IterableUserDict  # pragma: no cover
-except ImportError:  # Python 2  # pragma: no cover
-    from UserDict import IterableUserDict  # pragma: no cover
+from __future__ import absolute_import, unicode_literals
+from .py3_utils import python_2_unicode_compatible, IterableUserDict
 
 
+@python_2_unicode_compatible
 class Url(IterableUserDict, object):
     """
     A dictionary with two additional attributes for the method and url.
@@ -19,7 +16,4 @@ class Url(IterableUserDict, object):
         self.original_url = original_url
 
     def __str__(self):
-        return self.__unicode__().encode("utf-8")
-
-    def __unicode__(self):
         return '<%s %s>' % (self.method.title(), self.original_url or "")

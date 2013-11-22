@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import re
+import sys
 import json
 
 try:  # pragma: no cover
@@ -77,6 +78,18 @@ class UrlTestCase(unittest.TestCase):
                    'array': [0, -1]})
         unserialzed = json.loads(json.dumps(obj.data))
         self.assertDictEqual(obj.data, unserialzed)
+
+    def test_str_representation(self):
+        unistr = 'I\xf1t\xebrn\xe2ti\xf4n\xe0liz\xe6tion'
+        url = "http://test.com"
+        obj = Url(method=unistr, original_url=url)
+
+        if sys.version_info[0] == 2:
+            self.assertTrue(unistr.encode('utf-8') in str(obj))
+            self.assertTrue(url.encode('utf-8') in str(obj))
+        else:
+            self.assertTrue(unistr in str(obj))
+            self.assertTrue(url in str(obj))
 
 
 class EmbedlyTestCase(unittest.TestCase):
