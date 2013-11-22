@@ -3,12 +3,15 @@ import sys
 import codecs
 from setuptools import setup
 
-extra = {}
-
 required = ['httplib2']
+tests_require = []
 
-if sys.version_info[:2] < (2, 6):
-    required.append('simplejson')
+if sys.version_info[:2] < (2, 7):
+    tests_require.append('unittest2')
+
+if sys.version_info[:2] < (3, 3):
+    tests_require.append('mock')
+
 
 def get_version():
     with open(os.path.join('embedly', '__init__.py')) as f:
@@ -36,7 +39,10 @@ setup(
     url="https://github.com/embedly/embedly-python",
     packages=['embedly'],
     install_requires=required,
+    tests_require=tests_require,
+    test_suite="embedly.tests",
     zip_safe=True,
+    use_2to3=True,
     classifiers=(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -46,9 +52,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.1',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
-    ),
-    **extra
+    )
 )

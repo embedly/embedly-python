@@ -1,5 +1,6 @@
 *.pyc
-Embedly.egg-info/
+*.egg-info/
+.tox/
 build/
 dist/
 .virtualenv
