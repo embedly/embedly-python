@@ -4,6 +4,6 @@ python:
   - 2.7
   - 3.2
   - 3.3
-script: python embedly/tests.py
-install:
-  - python setup.py -q install
+env:
+  - PIP_USE_MIRRORS=true
+script: python setup.py test
