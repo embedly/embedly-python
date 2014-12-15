@@ -76,6 +76,8 @@ The client object now has a bunch of different methods that you can use.
     <embedly.models.Url at 0x10223d950>
 
 ``preview``
+  **Preview is no longer available to new users and has been replaced by extract.**
+
   Corresponds to the `Preview endpoint
   <http://embed.ly/docs/endpoints/1/preview>`_. Passes back a simple object
   that allows you to retrieve a title, description, content, html and a list of
@@ -85,6 +87,8 @@ The client object now has a bunch of different methods that you can use.
     <embedly.models.Url at 0x10223d950>
 
 ``objectify``
+  **Objectify is no longer available to new users and has been replaced by extract.**
+
   Corresponds to the `Objectify endpoint
   <http://embed.ly/docs/endpoints/2/objectify>`_. Passes back a simple object
   that allows you to retrieve pretty much everything that Embedly knows about a
