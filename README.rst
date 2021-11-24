@@ -97,7 +97,7 @@ The client object now has a bunch of different methods that you can use.
     >>> client.objectify('http://vimeo.com/18150336')
     <embedly.models.Url at 0x10223d950>
 
-The above functions all take the same arguements, a URL or a list of URLs and
+The above functions all take the same arguments, a URL or a list of URLs and
 keyword arguments that correspond to Embedly's `query arguments
 <http://embed.ly/docs/endpoints/arguments>`_. Here is an example::
 

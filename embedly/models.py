@@ -7,7 +7,7 @@ class Url(IterableUserDict, object):
     """
     A dictionary with two additional attributes for the method and url.
     UserDict provides a dictionary interface along with the regular
-    dictionary accsesible via the `data` attribute.
+    dictionary accessible via the `data` attribute.
 
     """
     def __init__(self, data=None, method=None, original_url=None, **kwargs):
