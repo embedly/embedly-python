@@ -52,7 +52,7 @@ class Embedly(object):
         if self.services:
             return self.services
 
-        url = 'http://api.embed.ly/1/services/python'
+        url = 'https://api.embed.ly/1/services/python'
 
         http = httplib2.Http(timeout=self.timeout)
         headers = {'User-Agent': self.user_agent,
@@ -122,7 +122,7 @@ class Embedly(object):
         else:
             query += '&url=%s' % quote(url_or_urls)
 
-        url = 'http://api.embed.ly/%s/%s?%s' % (version, method, query)
+        url = 'https://api.embed.ly/%s/%s?%s' % (version, method, query)
 
         http = httplib2.Http(timeout=self.timeout)
 
