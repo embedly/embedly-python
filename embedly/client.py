@@ -136,6 +136,10 @@ class Embedly(object):
 
             if kwargs.get('raw', False):
                 data['raw'] = content
+        elif multi:
+            data = [{'type': 'error',
+                     'error': True,
+                     'error_code': int(resp['status'])}] * len(url_or_urls)
         else:
             data = {'type': 'error',
                     'error': True,
